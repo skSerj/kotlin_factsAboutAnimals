@@ -21,8 +21,7 @@ class MainActivity : AppCompatActivity() {
         disposable = ApiService.data
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
-            .subscribe { result -> saveInfo(result)}
-//            .subscribe({ facts -> saveInfo(facts) }) { throwable: Throwable -> showError(throwable) }
+            .subscribe({ facts -> saveInfo(facts) }) { throwable: Throwable -> showError(throwable) }
     }
 
     private fun saveInfo(facts: List<AnimalFacts>) {
