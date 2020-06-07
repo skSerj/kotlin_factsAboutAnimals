@@ -4,29 +4,39 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
 import com.sourceit.animalfacts.network.model.AnimalFacts
-import com.sourceit.animalfacts.network.ApiService
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.schedulers.Schedulers
-import kotlin.collections.ArrayList
+import com.sourceit.animalfacts.network.ApiServiceCallBack
+import kotlinx.android.synthetic.main.activity_main.*
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 
 class MainActivity : AppCompatActivity() {
-    var arrayFactsModel: MutableList<AnimalFacts> = ArrayList()
-    private lateinit var disposable: Disposable
+    var factsList = mutableListOf<AnimalFacts>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        disposable = ApiService.data
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .subscribe({ facts -> saveInfo(facts) }) { throwable: Throwable -> showError(throwable) }
+        ApiServiceCallBack.data
+            .enqueue(object : Callback<List<AnimalFacts>> {
+
+                override fun onResponse(
+                    call: Call<List<AnimalFacts>>,
+                    response: Response<List<AnimalFacts>>
+                ) {
+                    factsList.addAll(response.body() as List<AnimalFacts>)
+
+                    showInfo(factsList)
+                }
+
+                override fun onFailure(call: Call<List<AnimalFacts>>, t: Throwable) {
+                    showError(t)
+                }
+            })
     }
 
-    private fun saveInfo(facts: List<AnimalFacts>) {
-        arrayFactsModel.addAll(facts)
-        Toast.makeText(this, facts[0].text, Toast.LENGTH_LONG).show()
+    private fun showInfo(factsList: MutableList<AnimalFacts>) {
+        textView.text = factsList[1].text
     }
 
     private fun showError(throwable: Throwable) {

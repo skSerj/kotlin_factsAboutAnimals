@@ -9,14 +9,14 @@ import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.GET
 
-object ApiService {
+object ApiServiceRX {
     private const val END_POINT = "https://cat-fact.herokuapp.com/"
-    private val countryApi: CountryApi
+    private val animalFactsApi: AnimalFactsApi
 
     val data: Observable<List<AnimalFacts>>
-        get() = countryApi.allCountries
+        get() = animalFactsApi.allCountries
 
-    interface CountryApi {
+    interface AnimalFactsApi {
         @get:GET("facts")
         val allCountries: Observable<List<AnimalFacts>>
     }
@@ -30,6 +30,6 @@ object ApiService {
             .baseUrl(END_POINT)
             .client(client)
             .build()
-        countryApi = retrofit.create(CountryApi::class.java)
+        animalFactsApi = retrofit.create(AnimalFactsApi::class.java)
     }
 }
