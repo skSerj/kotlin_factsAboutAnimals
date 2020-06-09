@@ -1,5 +1,7 @@
 package com.sourceit.animalfacts
 
+import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -35,22 +37,45 @@ class AnimalFragment : Fragment() {
             layoutManager = LinearLayoutManager(this.context)
         }
 
-        ApiServiceCallBack.data
-            .enqueue(object : Callback<List<AnimalFacts>> {
+        val sp = activity?.getSharedPreferences("FactsAboutAnimals", Context.MODE_PRIVATE)
+        val editor = sp?.edit()
+        if (sp?.getString("0", null).isNullOrEmpty()) {
+            ApiServiceCallBack.data
+                .enqueue(object : Callback<List<AnimalFacts>> {
 
-                override fun onResponse(
-                    call: Call<List<AnimalFacts>>,
-                    response: Response<List<AnimalFacts>>
-                ) {
-                    factsList.addAll(response.body() as List<AnimalFacts>)
-                    showInfo(factsList)
-                }
+                    override fun onResponse(
+                        call: Call<List<AnimalFacts>>,
+                        response: Response<List<AnimalFacts>>
+                    ) {
+                        factsList.addAll(response.body() as List<AnimalFacts>)
+                        showInfo(factsList)
 
-                override fun onFailure(call: Call<List<AnimalFacts>>, t: Throwable) {
-                    showError(t)
-                    t.printStackTrace()
-                }
-            })
+                        for (numAnimalFact in 0..99) {
+                            editor?.putString(
+                                numAnimalFact.toString(),
+                                factsList[numAnimalFact].text
+                            )
+                            editor?.apply()
+                        }
+                    }
+
+                    override fun onFailure(call: Call<List<AnimalFacts>>, t: Throwable) {
+                        showError(t)
+                        t.printStackTrace()
+                    }
+                })
+        } else {
+            for (numAnimalFact in 0..99) {
+                factsList.add(
+                    AnimalFacts(
+                        "cat",
+                        numAnimalFact,
+                        sp?.getString(numAnimalFact.toString(), "Unknown").toString()
+                    )
+                )
+            }
+            showInfo(factsList)
+        }
     }
 
     private fun showInfo(factsList: MutableList<AnimalFacts>) {
