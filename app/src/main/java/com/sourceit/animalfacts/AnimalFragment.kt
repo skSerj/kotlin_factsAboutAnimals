@@ -50,7 +50,7 @@ class AnimalFragment : Fragment() {
                         factsList.addAll(response.body() as List<AnimalFacts>)
                         showInfo(factsList)
 
-                        for (numAnimalFact in 0..99) {
+                        for (numAnimalFact in 0 until factsList.size) {
                             editor?.putString(
                                 numAnimalFact.toString(),
                                 factsList[numAnimalFact].text
@@ -65,7 +65,7 @@ class AnimalFragment : Fragment() {
                     }
                 })
         } else {
-            for (numAnimalFact in 0..99) {
+            for (numAnimalFact in 0 until factsList.size) {
                 factsList.add(
                     AnimalFacts(
                         "cat",
