@@ -6,27 +6,35 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.sourceit.animalfacts.network.ApiServiceCallBack
 import com.sourceit.animalfacts.network.model.AnimalFacts
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.fragment_animal.*
+import kotlinx.android.synthetic.main.animal_facts_list.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
 class AnimalFragment : Fragment() {
     var factsList = mutableListOf<AnimalFacts>()
+
     companion object {
+        val factsAdapter: FactsAdapter = FactsAdapter()
         fun newInstance() = AnimalFragment()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
     ): View? {
-        return inflater.inflate(R.layout.fragment_animal, container, false)
+        return inflater.inflate(R.layout.animal_facts_list, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
+        facts_list.apply {
+            adapter = factsAdapter
+            layoutManager = LinearLayoutManager(this.context)
+        }
+
         ApiServiceCallBack.data
             .enqueue(object : Callback<List<AnimalFacts>> {
 
@@ -46,9 +54,7 @@ class AnimalFragment : Fragment() {
     }
 
     private fun showInfo(factsList: MutableList<AnimalFacts>) {
-        txt_fact.text = factsList[1].text
-        txt_type.text = factsList[1].type
-        txt_v.text = factsList[1].v.toString()
+        factsAdapter.update(factsList)
     }
 
     private fun showError(throwable: Throwable) {

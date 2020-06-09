@@ -8,12 +8,4 @@
     android:orientation="vertical"
     android:padding="16dp"
     tools:context=".MainActivity">
-
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="36sp"
-        android:text="Hello" />
 </LinearLayout>
