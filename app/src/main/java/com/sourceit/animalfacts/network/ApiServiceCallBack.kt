@@ -10,14 +10,14 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 object ApiServiceCallBack {
-    private const val API = "https://cat-fact.herokuapp.com/"
+    private const val API = "https://cat-fact.herokuapp.com/facts/"
     private var animalFactsApi2: AnimalFactsApi2
     val data: Call<List<AnimalFacts>>
-        get() = animalFactsApi2.getFactsAboutAnimal("cat")
+        get() = animalFactsApi2.getFactsAboutAnimal("cat",100)
 
     interface AnimalFactsApi2 {
-        @GET("facts")
-        fun getFactsAboutAnimal(@Query("animal_type") type: String?): Call<List<AnimalFacts>>
+        @GET("random")
+        fun getFactsAboutAnimal(@Query("animal_type") type: String,@Query("amount") amount: Int): Call<List<AnimalFacts>>
     }
 
     init {
